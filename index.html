@@ -1,0 +1,229 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Interview Q Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: linear-gradient(135deg, #3a3d40, #18191a);
+      color: #fff;
+      padding: 40px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background-color: #252728;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    select, textarea, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    select, textarea {
+      background: #2d2f31;
+      color: #fff;
+    }
+
+    button {
+      background-color: #00c896;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #00a87a;
+    }
+
+    .output {
+      background-color: #1f2022;
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .question {
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #444;
+    }
+  </style>
+</head>
+<body>
+  <h1>⚡ Smart Interview Question Generator</h1>
+  <div class="container">
+    <label for="role">Select Job Role:</label>
+    <select id="role">
+      <option value="">-- Choose a Role --</option>
+      <option value="frontend">Frontend Developer</option>
+      <option value="backend">Backend Developer</option>
+      <option value="fullstack">Fullstack Developer</option>
+      <option value="devops">DevOps Engineer</option>
+      <option value="data">Data Analyst</option>
+      <option value="ai">AI/ML Engineer</option>
+    </select>
+
+    <label for="level">Difficulty Level:</label>
+    <select id="level">
+      <option value="beginner">Beginner</option>
+      <option value="intermediate">Intermediate</option>
+      <option value="expert">Expert</option>
+    </select>
+
+    <button onclick="generateQuestions()">🎯 Generate Questions</button>
+
+    <div class="output" id="questionList"></div>
+  </div>
+
+  <script>
+    const questions = {
+      frontend: {
+        beginner: [
+          "What is the difference between HTML and HTML5?",
+          "Explain the box model in CSS.",
+          "What is semantic HTML and why is it important?"
+        ],
+        intermediate: [
+          "What are React hooks? Give examples.",
+          "How does virtual DOM work in React?",
+          "Explain event delegation in JavaScript."
+        ],
+        expert: [
+          "Explain hydration in SSR React apps.",
+          "Optimize a React app with 10k components.",
+          "How would you design a custom CSS-in-JS solution?"
+        ]
+      },
+      backend: {
+        beginner: [
+          "What is REST API?",
+          "How do HTTP methods differ?",
+          "What is CRUD operation?"
+        ],
+        intermediate: [
+          "Explain middleware in Express.js.",
+          "How does authentication differ from authorization?",
+          "What is CORS and how do you handle it?"
+        ],
+        expert: [
+          "Design a scalable microservice for a shopping cart.",
+          "What is event-driven architecture?",
+          "How do you implement zero-downtime deployment?"
+        ]
+      },
+      fullstack: {
+        beginner: [
+          "What is fullstack development?",
+          "Difference between client-side and server-side rendering?",
+          "How does a web browser communicate with a backend?"
+        ],
+        intermediate: [
+          "Explain JWT and how it works in auth.",
+          "How would you secure a MERN stack app?",
+          "Build vs Buy decision in fullstack tools."
+        ],
+        expert: [
+          "Design a CI/CD pipeline for a MERN stack.",
+          "How would you manage state in a fullstack app?",
+          "Optimize SEO in a fullstack React/Next.js project."
+        ]
+      },
+      devops: {
+        beginner: [
+          "What is version control?",
+          "What are CI and CD?",
+          "Explain Git branching."
+        ],
+        intermediate: [
+          "How does Docker work?",
+          "What is Infrastructure as Code (IaC)?",
+          "What are common CI tools?"
+        ],
+        expert: [
+          "How would you setup a multi-region Kubernetes cluster?",
+          "Explain Blue-Green Deployment strategy.",
+          "How to handle secrets in a CI/CD pipeline?"
+        ]
+      },
+      data: {
+        beginner: [
+          "What is data cleaning?",
+          "What is a pivot table?",
+          "Explain the difference between mean and median."
+        ],
+        intermediate: [
+          "How does SQL GROUP BY work?",
+          "Explain data normalization.",
+          "What are common KPIs in business analysis?"
+        ],
+        expert: [
+          "How to design a dashboard for real-time KPIs?",
+          "Explain ETL vs ELT and when to use what.",
+          "How would you reduce data redundancy in a large system?"
+        ]
+      },
+      ai: {
+        beginner: [
+          "What is machine learning?",
+          "What are the types of ML algorithms?",
+          "Difference between AI and ML."
+        ],
+        intermediate: [
+          "Explain overfitting and underfitting.",
+          "What is gradient descent?",
+          "How does a recommendation system work?"
+        ],
+        expert: [
+          "Design an AI solution for fraud detection.",
+          "How would you improve model accuracy on imbalanced datasets?",
+          "Explain transformer models and their use cases."
+        ]
+      }
+    };
+
+    function generateQuestions() {
+      const role = document.getElementById('role').value;
+      const level = document.getElementById('level').value;
+      const list = document.getElementById('questionList');
+      list.innerHTML = '';
+
+      if (role && level && questions[role] && questions[role][level]) {
+        questions[role][level].forEach((q, index) => {
+          const div = document.createElement('div');
+          div.className = 'question';
+          div.innerHTML = `<strong>Q${index + 1}:</strong> ${q}`;
+          list.appendChild(div);
+        });
+      } else {
+        list.innerHTML = '<p>Please select both role and level to generate questions.</p>';
+      }
+    }
+  </script>
+</body>
+</html>
